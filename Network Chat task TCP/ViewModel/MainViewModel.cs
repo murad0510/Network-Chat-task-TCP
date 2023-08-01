@@ -1,11 +1,16 @@
 ﻿using Network_Chat_task_TCP.Commands;
+using Network_Chat_task_TCP.Helpers;
 using Network_Chat_task_TCP.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,45 +30,73 @@ namespace Network_Chat_task_TCP.ViewModel
             set { userEnterName = value; OnPropertyChanged(); }
         }
 
-        static TcpClient _client = null;
 
+        [Obsolete]
         public MainViewModel()
         {
             ConnectServerCommand = new RelayCommand((_) =>
             {
-                Task.Run(() =>
+                User user = new User();
+                user.Name = UserEnterName;
+
+                string hostName = Dns.GetHostName();
+
+                string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
+
+                var ipAddress = IPAddress.Parse(myIP);
+
+                var ep = new IPEndPoint(ipAddress, 27001);
+
+                user.EndPoint = ep.ToString();
+
+                var jsonString = JsonConvert.SerializeObject(user);
+
+                MessageBox.Show($"{user.Name} - {user.EndPoint}");
+
+                var ipAdressRemote = IPAddress.Parse("192.168.0.109");
+                var port = 27001;
+
+                var endPointRemote = new IPEndPoint(ipAdressRemote, port);
+
+                var _client = new TcpClient();
+
+
+                try
                 {
-                    User user = new User();
-                    user.Name = UserEnterName;
-
-                    string hostName = Dns.GetHostName();
-
-                    string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
-
-                    var ipAddress = IPAddress.Parse(myIP);
-
-                    var ep = new IPEndPoint(ipAddress, 27001);
-
-                    user.EndPoint = ep;
-
-                    MessageBox.Show($"{user.Name} - {user.EndPoint}");
-
-
-                    var ipAdressRemote = IPAddress.Parse("10.2.11.3");
-                    var port = 27001;
-
-                    var endPointRemote = new IPEndPoint(ipAdressRemote, port);
-
-                    _client = new TcpClient();
-
                     _client.Connect(endPointRemote);
+                    if (_client.Connected)
+                    {
+                        var write = Task.Run(() =>
+                        {
+                            while (true)
+                            {
+                                if (jsonString != null)
+                                {
+                                    var stream = _client.GetStream();
+                                    var bw = new BinaryWriter(stream);
+                                    bw.Write(jsonString);
+                                    jsonString = null;
+                                }
+                            }
+                        });
 
-                    var stream = _client.GetStream();
-                    var bw = new BinaryWriter(stream);
-                    bw.Write(user.Name);
+                        var reader = Task.Run(() =>
+                        {
+                            while (true)
+                            {
+                                var stream = _client.GetStream();
+                                var br = new BinaryReader(stream);
+                                var msg = br.ReadString();
+                            };
+                        });
 
-                });
-
+                        Task.WaitAll(write, reader);
+                    }
+                }
+                catch (Exception)
+                {
+                    //MessageBox.Show(ex.Message);
+                }
 
             });
         }

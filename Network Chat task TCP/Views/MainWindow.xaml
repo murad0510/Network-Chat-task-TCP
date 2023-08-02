@@ -3,20 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Network_Chat_task_TCP"
+        xmlns:local="clr-namespace:Network_Chat_task_TCP" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="600">
+        Title="MainWindow" Width="567" Height="530">
     <Grid>
-        <!--<ListBox Width="500" Height="300" Margin="0,0,0,130" ItemsSource="{Binding UserNameItemSource}"></ListBox>-->
+        <Canvas>
+            <!--<ListBox Width="500" Height="300" Margin="0,0,0,130" ItemsSource="{Binding UserNameItemSource}"></ListBox>-->
 
-        <TextBox Width="300" Height="30" Margin="26,33,274,371" Text="{Binding UserEnterName}"></TextBox>
+            <TextBox Width="300" Height="30" Margin="26,33,274,371" FontSize="20" Text="{Binding UserEnterName}"></TextBox>
 
-        <Button Command="{Binding ConnectServerCommand}" Width="150" Height="70" Content="Connect Server" FontSize="20" Background="DeepSkyBlue" Foreground="White" Margin="386,13,64,351">
-            <Button.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="20"/>
-                </Style>
-            </Button.Resources>
-        </Button>
+            <Button Command="{Binding ConnectServerCommand}" Width="150" Height="30" Content="Connect Server" FontSize="20" Background="DeepSkyBlue" Foreground="White" Margin="380,30,0,0">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            
+        </Canvas>
+            <WrapPanel Name="MainChatWrapPanel" Width="555" Height="440"  Margin="10,74,0,0"></WrapPanel>
     </Grid>
 </Window>

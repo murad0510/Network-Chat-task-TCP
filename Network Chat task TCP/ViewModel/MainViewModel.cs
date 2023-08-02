@@ -1,10 +1,12 @@
 ﻿using Network_Chat_task_TCP.Commands;
 using Network_Chat_task_TCP.Helpers;
 using Network_Chat_task_TCP.Models;
+using Network_Chat_task_TCP.Views.UserControls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -30,12 +32,21 @@ namespace Network_Chat_task_TCP.ViewModel
             set { userEnterName = value; OnPropertyChanged(); }
         }
 
+        private ObservableCollection<User> allUsers;
+
+        public ObservableCollection<User> AllUsers
+        {
+            get { return allUsers; }
+            set { allUsers = value; }
+        }
 
         [Obsolete]
         public MainViewModel()
         {
             ConnectServerCommand = new RelayCommand((_) =>
             {
+                ChatUC chatUC = new ChatUC();
+                App.MainChatWrapPanel.Children.Add(chatUC);
                 User user = new User();
                 user.Name = UserEnterName;
 
@@ -53,7 +64,7 @@ namespace Network_Chat_task_TCP.ViewModel
 
                 MessageBox.Show($"{user.Name} - {user.EndPoint}");
 
-                var ipAdressRemote = IPAddress.Parse("192.168.0.109");
+                var ipAdressRemote = IPAddress.Parse("10.1.18.3");
                 var port = 27001;
 
                 var endPointRemote = new IPEndPoint(ipAdressRemote, port);
@@ -61,43 +72,47 @@ namespace Network_Chat_task_TCP.ViewModel
                 var _client = new TcpClient();
 
 
-                try
+                Task.Run(() =>
                 {
-                    _client.Connect(endPointRemote);
-                    if (_client.Connected)
+                    try
                     {
-                        var write = Task.Run(() =>
+                        _client.Connect(endPointRemote);
+                        if (_client.Connected)
                         {
-                            while (true)
+                            var write = Task.Run(() =>
                             {
-                                if (jsonString != null)
+                                while (true)
+                                {
+                                    if (jsonString != null)
+                                    {
+                                        var stream = _client.GetStream();
+                                        var bw = new BinaryWriter(stream);
+                                        bw.Write(jsonString);
+                                        jsonString = null;
+                                    }
+                                }
+                            });
+
+                            var reader = Task.Run(() =>
+                            {
+                                while (true)
                                 {
                                     var stream = _client.GetStream();
-                                    var bw = new BinaryWriter(stream);
-                                    bw.Write(jsonString);
-                                    jsonString = null;
-                                }
-                            }
-                        });
+                                    var br = new BinaryReader(stream);
+                                    var msg = br.ReadString();
+                                    MessageBox.Show(msg);
+                                };
+                            });
 
-                        var reader = Task.Run(() =>
-                        {
-                            while (true)
-                            {
-                                var stream = _client.GetStream();
-                                var br = new BinaryReader(stream);
-                                var msg = br.ReadString();
-                            };
-                        });
-
-                        Task.WaitAll(write, reader);
+                            Task.WaitAll(write, reader);
+                        }
                     }
-                }
-                catch (Exception)
-                {
-                    //MessageBox.Show(ex.Message);
-                }
+                    catch (Exception)
+                    {
+                        //MessageBox.Show(ex.Message);
+                    }
 
+                });
             });
         }
     }

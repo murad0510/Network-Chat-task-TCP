@@ -1,5 +1,4 @@
-﻿using Network_Chat_task_TCP.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,20 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Network_Chat_task_TCP
+namespace Network_Chat_task_TCP.Views.UserControls
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ChatUC.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ChatUC : UserControl
     {
-        [Obsolete]
-        public MainWindow()
+        public ChatUC()
         {
             InitializeComponent();
-            App.MainChatWrapPanel = MainChatWrapPanel;
-            MainViewModel mainViewModel = new MainViewModel();
-            this.DataContext = mainViewModel;
         }
     }
 }

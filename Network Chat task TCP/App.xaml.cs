@@ -15,5 +15,6 @@ namespace Network_Chat_task_TCP
     public partial class App : Application
     {
         public static WrapPanel MainChatWrapPanel { get; set; }
+        public static WrapPanel UserMessageStackPanel { get; set; }
     }
 }

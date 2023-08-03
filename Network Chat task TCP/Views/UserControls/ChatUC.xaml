@@ -22,7 +22,8 @@
 
             <Label Content="{Binding UserName}" Margin="110,10,0,0"></Label>
 
-            <StackPanel Width="540" Height="300" Margin="0,50,0,0"></StackPanel>
+            <WrapPanel Background="#F7F2E0" Name="UserMessageWrapPanel" Orientation="Vertical" Width="540" Height="300" Margin="0,50,0,0">
+            </WrapPanel>
 
             <Ellipse Canvas.Bottom="16" Canvas.Left="63" Height="40" Width="40" Canvas.Top="5">
                 <Ellipse.Fill>

@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Network_Chat_task_TCP" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Width="567" Height="530">
+        Title="MainWindow" Width="567" Height="530" ResizeMode="NoResize">
     <Grid>
         <Canvas>
             <!--<ListBox Width="500" Height="300" Margin="0,0,0,130" ItemsSource="{Binding UserNameItemSource}"></ListBox>-->
 
             <TextBox Width="300" Height="30" Margin="26,33,274,371" FontSize="20" Text="{Binding UserEnterName}"></TextBox>
 
-            <Button Command="{Binding ConnectServerCommand}" Width="150" Height="30" Content="Connect Server" FontSize="20" Background="DeepSkyBlue" Foreground="White" Margin="380,30,0,0">
+            <Button IsEnabled="{Binding ConnectedServerIsEnabled}" Command="{Binding ConnectServerCommand}" Width="150" Height="30" Content="Connect Server" FontSize="20" Background="DeepSkyBlue" Foreground="White" Margin="380,30,0,0">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"/>

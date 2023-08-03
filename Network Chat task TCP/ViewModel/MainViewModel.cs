@@ -40,13 +40,26 @@ namespace Network_Chat_task_TCP.ViewModel
             set { allUsers = value; }
         }
 
+        private bool connectedServerIsEnabled = true;
+
+        public bool ConnectedServerIsEnabled
+        {
+            get { return connectedServerIsEnabled; }
+            set { connectedServerIsEnabled = value; OnPropertyChanged(); }
+        }
+
+
         [Obsolete]
         public MainViewModel()
         {
             ConnectServerCommand = new RelayCommand((_) =>
             {
                 ChatUC chatUC = new ChatUC();
+                var chatUcViewModel = new ChatUcViewModel();
+                chatUC.DataContext = chatUcViewModel;
                 App.MainChatWrapPanel.Children.Add(chatUC);
+                ConnectedServerIsEnabled = false;
+
                 User user = new User();
                 user.Name = UserEnterName;
 
@@ -62,15 +75,14 @@ namespace Network_Chat_task_TCP.ViewModel
 
                 var jsonString = JsonConvert.SerializeObject(user);
 
-                MessageBox.Show($"{user.Name} - {user.EndPoint}");
+                //MessageBox.Show($"{user.Name} - {user.EndPoint}");
 
-                var ipAdressRemote = IPAddress.Parse("10.1.18.3");
+                var ipAdressRemote = IPAddress.Parse("192.168.0.109");
                 var port = 27001;
 
                 var endPointRemote = new IPEndPoint(ipAdressRemote, port);
 
                 var _client = new TcpClient();
-
 
                 Task.Run(() =>
                 {
@@ -97,12 +109,35 @@ namespace Network_Chat_task_TCP.ViewModel
                             {
                                 while (true)
                                 {
-                                    var stream = _client.GetStream();
-                                    var br = new BinaryReader(stream);
-                                    var msg = br.ReadString();
-                                    MessageBox.Show(msg);
+                                    if (chatUcViewModel.UserName == null)
+                                    {
+                                        var stream = _client.GetStream();
+                                        var br = new BinaryReader(stream);
+                                        var msg = br.ReadString();
+                                        chatUcViewModel.UserName = msg;
+                                    }
+                                    else
+                                    {
+                                        var stream = _client.GetStream();
+                                        var br = new BinaryReader(stream);
+                                        var msg = br.ReadString();
+                                        MessageBox.Show(msg);
+                                        App.Current.Dispatcher.Invoke((System.Action)delegate
+                                        {
+                                            EachMessageUcViewModel eachMessageUcViewModel = new EachMessageUcViewModel();
+                                            EachMessageUC eachMessageUC = new EachMessageUC();
+                                            eachMessageUcViewModel.Msg = msg;
+                                            eachMessageUC.DataContext = eachMessageUcViewModel;
+                                            //MessageBox.Show($"{eachMessageUcViewModel.Msg}");
+                                            App.UserMessageStackPanel.Children.Add(eachMessageUC);
+                                            //MessageBox.Show($"{App.UserMessageStackPanel.Children.Count}");
+                                        });
+                                        //chatUcViewModel.UserName = msg;
+                                    }
                                 };
                             });
+
+
 
                             Task.WaitAll(write, reader);
                         }

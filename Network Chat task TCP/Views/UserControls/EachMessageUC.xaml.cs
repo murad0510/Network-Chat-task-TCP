@@ -17,17 +17,15 @@ using System.Windows.Shapes;
 namespace Network_Chat_task_TCP.Views.UserControls
 {
     /// <summary>
-    /// Interaction logic for ChatUC.xaml
+    /// Interaction logic for EachMessageUC.xaml
     /// </summary>
-    public partial class ChatUC : UserControl
+    public partial class EachMessageUC : UserControl
     {
-        [Obsolete]
-        public ChatUC()
+        public EachMessageUC()
         {
             InitializeComponent();
-            App.UserMessageStackPanel = UserMessageWrapPanel;
-            ChatUcViewModel chatUcViewModel = new ChatUcViewModel();
-            this.DataContext = chatUcViewModel;
+            EachMessageUcViewModel eachMessageUcViewModelview = new EachMessageUcViewModel();
+            this.DataContext = eachMessageUcViewModelview;
         }
     }
 }

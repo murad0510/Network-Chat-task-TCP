@@ -60,20 +60,20 @@ namespace Network_Chat_task_TCP.ViewModel
                 App.MainChatWrapPanel.Children.Add(chatUC);
                 ConnectedServerIsEnabled = false;
 
-                User user = new User();
-                user.Name = UserEnterName;
+                //User user = new User();
+                //user.Name = UserEnterName;
 
-                string hostName = Dns.GetHostName();
+                //string hostName = Dns.GetHostName();
 
-                string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
+                //string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
 
-                var ipAddress = IPAddress.Parse(myIP);
+                //var ipAddress = IPAddress.Parse("10.2.27.3");
 
-                var ep = new IPEndPoint(ipAddress, 27001);
+                //var ep = new IPEndPoint(ipAddress, 27001);
 
-                user.EndPoint = ep.ToString();
+                //user.EndPoint = ep.ToString();
 
-                var jsonString = JsonConvert.SerializeObject(user);
+                //var jsonString = JsonConvert.SerializeObject(user);
 
                 //MessageBox.Show($"{user.Name} - {user.EndPoint}");
 
@@ -89,6 +89,15 @@ namespace Network_Chat_task_TCP.ViewModel
                     try
                     {
                         _client.Connect(endPointRemote);
+
+                        User user = new User()
+                        {
+                            Name = UserEnterName,
+                            EndPoint = _client.Client.LocalEndPoint.ToString()
+                        };
+                        //MessageBox.Show($"{user.EndPoint}");
+                        var jsonString = JsonConvert.SerializeObject(user);
+
                         if (_client.Connected)
                         {
                             var write = Task.Run(() =>
@@ -136,7 +145,6 @@ namespace Network_Chat_task_TCP.ViewModel
                                     //}
                                 };
                             });
-
 
 
                             Task.WaitAll(write, reader);

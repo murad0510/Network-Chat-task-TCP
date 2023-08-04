@@ -40,13 +40,13 @@ namespace Network_Chat_task_TCP.ViewModel
             {
                 MessageBox.Show("s");
 
-                string hostName = Dns.GetHostName();
+                //string hostName = Dns.GetHostName();
 
-                string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
+                //string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
 
-                var ipAddress = IPAddress.Parse(myIP);
+                //var ipAddress = IPAddress.Parse("10.2.27.3");
 
-                var ep = new IPEndPoint(ipAddress, 27001);
+                //var ep = new IPEndPoint(ipAddress, 27001);
 
                 //user.EndPoint = ep.ToString();
 
@@ -54,7 +54,7 @@ namespace Network_Chat_task_TCP.ViewModel
 
                 //MessageBox.Show($"{user.Name} - {user.EndPoint}");
 
-                var ipAdressRemote = IPAddress.Parse("192.168.0.109");
+                var ipAdressRemote = IPAddress.Parse("10.2.27.3");
                 var port = 27001;
 
                 var endPointRemote = new IPEndPoint(ipAdressRemote, port);

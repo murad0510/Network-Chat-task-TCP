@@ -77,7 +77,7 @@ namespace Network_Chat_task_TCP.ViewModel
 
                 //MessageBox.Show($"{user.Name} - {user.EndPoint}");
 
-                var ipAdressRemote = IPAddress.Parse("192.168.0.109");
+                var ipAdressRemote = IPAddress.Parse("10.2.27.3");
                 var port = 27001;
 
                 var endPointRemote = new IPEndPoint(ipAdressRemote, port);
@@ -109,31 +109,31 @@ namespace Network_Chat_task_TCP.ViewModel
                             {
                                 while (true)
                                 {
-                                    if (chatUcViewModel.UserName == null)
+                                    //if (chatUcViewModel.UserName == null)
+                                    //{
+                                    //    var stream = _client.GetStream();
+                                    //    var br = new BinaryReader(stream);
+                                    //    var msg = br.ReadString();
+                                    //    chatUcViewModel.UserName = msg;
+                                    //}
+                                    //else
+                                    //{
+                                    var stream = _client.GetStream();
+                                    var br = new BinaryReader(stream);
+                                    var msg = br.ReadString();
+                                    MessageBox.Show(msg);
+                                    App.Current.Dispatcher.Invoke((System.Action)delegate
                                     {
-                                        var stream = _client.GetStream();
-                                        var br = new BinaryReader(stream);
-                                        var msg = br.ReadString();
-                                        chatUcViewModel.UserName = msg;
-                                    }
-                                    else
-                                    {
-                                        var stream = _client.GetStream();
-                                        var br = new BinaryReader(stream);
-                                        var msg = br.ReadString();
-                                        MessageBox.Show(msg);
-                                        App.Current.Dispatcher.Invoke((System.Action)delegate
-                                        {
-                                            EachMessageUcViewModel eachMessageUcViewModel = new EachMessageUcViewModel();
-                                            EachMessageUC eachMessageUC = new EachMessageUC();
-                                            eachMessageUcViewModel.Msg = msg;
-                                            eachMessageUC.DataContext = eachMessageUcViewModel;
-                                            //MessageBox.Show($"{eachMessageUcViewModel.Msg}");
-                                            App.UserMessageStackPanel.Children.Add(eachMessageUC);
-                                            //MessageBox.Show($"{App.UserMessageStackPanel.Children.Count}");
-                                        });
-                                        //chatUcViewModel.UserName = msg;
-                                    }
+                                        EachMessageUcViewModel eachMessageUcViewModel = new EachMessageUcViewModel();
+                                        EachMessageUC eachMessageUC = new EachMessageUC();
+                                        eachMessageUcViewModel.Msg = msg;
+                                        eachMessageUC.DataContext = eachMessageUcViewModel;
+                                        //MessageBox.Show($"{eachMessageUcViewModel.Msg}");
+                                        App.UserMessageStackPanel.Children.Add(eachMessageUC);
+                                        //MessageBox.Show($"{App.UserMessageStackPanel.Children.Count}");
+                                    });
+                                    //chatUcViewModel.UserName = msg;
+                                    //}
                                 };
                             });
 
